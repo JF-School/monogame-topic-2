@@ -141,6 +141,7 @@ namespace fruit_and_veggies_or_something
                             if (fruitRects[i].Contains(mouseState.Position))
                             {
                                 fruitRects.RemoveAt(i);
+                                fruitTextures.RemoveAt(i);
                                 i--;
                             }
                         }
@@ -149,6 +150,7 @@ namespace fruit_and_veggies_or_something
                             if (veggieRects[i].Contains(mouseState.Position))
                             {
                                 veggieRects.RemoveAt(i);
+                                veggieTextures.RemoveAt(i);
                                 i--;
                             }
                         }
