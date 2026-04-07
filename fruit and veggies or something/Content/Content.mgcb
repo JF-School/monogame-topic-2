@@ -34,6 +34,25 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/ScoreFont.spritefont
 
+#begin Fonts/StatsFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/StatsFont.spritefont
+
+#begin Images/backbutton.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/backbutton.png
+
 #begin Images/creditsbutton.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -586,6 +605,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/howbutton.png
 
+#begin Images/howtoplay.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/howtoplay.png
+
 #begin Images/introbackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -597,6 +628,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/introbackground.png
+
+#begin Images/leavebutton.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/leavebutton.png
 
 #begin Images/playbutton.png
 /importer:TextureImporter
@@ -969,4 +1012,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/veggie9.png
+
+#begin X:/My Drive/Downloads/ICS4U monogame/funactivity/statistics.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:X:/My Drive/Downloads/ICS4U monogame/funactivity/statistics.png;Images/statistics.png
 

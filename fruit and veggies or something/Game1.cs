@@ -21,8 +21,9 @@ namespace fruit_and_veggies_or_something
 
         Random generator;
         int gappleSize, bombSize, sizeMax; // the max size for the rectangles
-        int score; // total score collected
-        bool debugMode, gappleClicked; // boolean variables
+        int rawScore, score; // total score collected
+        int fruitCount, veggieCount, gappleCount, bombCount;
+        bool debugMode, gappleClicked, howPlay; // boolean variables
         int debugRound;
         int fruitMax, veggieMax, bombMax, gappleMax; // the max amount of rectangles that can exist
         float fruitTimer, veggieTimer, bombTimer, gappleTimer; // the timers for the rectangles
@@ -32,15 +33,16 @@ namespace fruit_and_veggies_or_something
         MouseState prevMouseState, mouseState;
         KeyboardState prevKeyboardState, keyboardState;
         Screen screen;
-        SpriteFont scoreFont, debugFont, gameFont;
+        SpriteFont scoreFont, debugFont, gameFont, statsFont;
 
         Rectangle window;
         List<Rectangle> fruitRects;
         List<Rectangle> veggieRects;
         List<Rectangle> bombRects;
         List<Rectangle> gappleRects;
-        Rectangle playBtn, howBtn, creditsBtn;
-        Texture2D bombTexture, explosionTexture, playTexture, howTexture, creditsTexture, gappleTexture;
+        Rectangle playBtn, howBtn, creditsBtn, exitBtn, backBtn;
+        Texture2D bombTexture, playTexture, howBtnTexture, howPlayTexture, creditsBtnTexture, 
+            gappleTexture, statisticsTexture, exitBtnTexture, backBtnTexture;
         Texture2D introBack, gameBack;
         List<Texture2D> frTextures;
         List<Texture2D> vgTextures;
@@ -74,17 +76,23 @@ namespace fruit_and_veggies_or_something
             sizeMax = 48;
             bombSize = 32;
 
+            fruitCount = 0;
+            veggieCount = 0;
+            bombCount = 0;
+            gappleCount = 0;
+
             debugMode = false;
             gappleClicked = false;
+            howPlay = false;
             debugRound = 1;
 
             fruitRects = new List<Rectangle>();
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 25; i++)
             {
                 fruitRects.Add(new Rectangle(generator.Next(window.Width - (sizeMax + 16)), generator.Next(window.Height - (sizeMax + 16)), sizeMax, sizeMax));
             }
             veggieRects = new List<Rectangle>();
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 25; i++)
             {
                 veggieRects.Add(new Rectangle(generator.Next(window.Width - (sizeMax + 16)), generator.Next(window.Height - (sizeMax + 16)), sizeMax, sizeMax));
             }
@@ -99,6 +107,10 @@ namespace fruit_and_veggies_or_something
                 gappleRects.Add(new Rectangle(generator.Next(window.Width - (gappleSize + 16)), generator.Next(window.Height - (gappleSize + 16)), gappleSize, gappleSize));
             }
             playBtn = new Rectangle(350, 200, 100, 100);
+            howBtn = new Rectangle(240, 200, 100, 100);
+            backBtn = new Rectangle(10, 10, 75, 75);
+            exitBtn = new Rectangle(720, 5, 75, 75);
+            creditsBtn = new Rectangle(460, 200, 100, 100);
 
             frTextures = new List<Texture2D>();
             vgTextures = new List<Texture2D>();
@@ -115,10 +127,14 @@ namespace fruit_and_veggies_or_something
             // TODO: use this.Content to load your game content here
 
             playTexture = Content.Load<Texture2D>("Images/playbutton");
-            howTexture = Content.Load<Texture2D>("Images/howbutton");
-            creditsTexture = Content.Load<Texture2D>("Images/creditsbutton");
+            howBtnTexture = Content.Load<Texture2D>("Images/howbutton");
+            howPlayTexture = Content.Load<Texture2D>("Images/howtoplay");
+            backBtnTexture = Content.Load<Texture2D>("Images/backbutton");
+            exitBtnTexture = Content.Load<Texture2D>("Images/leavebutton");
+            statisticsTexture = Content.Load<Texture2D>("Images/statistics");
+            creditsBtnTexture = Content.Load<Texture2D>("Images/creditsbutton");
+
             bombTexture = Content.Load<Texture2D>("Images/dynamite");
-            explosionTexture = Content.Load<Texture2D>("Images/explosion");
             gappleTexture = Content.Load<Texture2D>("Images/goldenapple");
 
             introBack = Content.Load<Texture2D>("Images/introbackground");
@@ -127,6 +143,7 @@ namespace fruit_and_veggies_or_something
             scoreFont = Content.Load<SpriteFont>("Fonts/ScoreFont");
             debugFont = Content.Load<SpriteFont>("Fonts/DebugFont");
             gameFont = Content.Load<SpriteFont>("Fonts/GameFont");
+            statsFont = Content.Load<SpriteFont>("Fonts/StatsFont");
 
 
             for (int i = 1; i <= 40; i++)
@@ -154,6 +171,9 @@ namespace fruit_and_veggies_or_something
             prevKeyboardState = keyboardState;
             keyboardState = Keyboard.GetState();
 
+            //this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
+
+            // mouse states
             switch (screen)
             {
                 case Screen.Intro:
@@ -161,6 +181,10 @@ namespace fruit_and_veggies_or_something
                     {
                         if (playBtn.Contains(mouseState.Position))
                             screen = Screen.Game;
+                        if (howBtn.Contains(mouseState.Position))
+                            howPlay = true;
+                        if (backBtn.Contains(mouseState.Position) && howPlay)
+                            howPlay = false;
                     }
                         break;
                 case Screen.Game:
@@ -170,6 +194,8 @@ namespace fruit_and_veggies_or_something
                         {
                             if (fruitRects[i].Contains(mouseState.Position))
                             {
+                                fruitCount++;
+                                rawScore += 100;
                                 score += 100;
                                 fruitRects.RemoveAt(i);
                                 fruitTextures.RemoveAt(i);
@@ -180,6 +206,8 @@ namespace fruit_and_veggies_or_something
                         {
                             if (veggieRects[i].Contains(mouseState.Position))
                             {
+                                veggieCount++;
+                                rawScore += 50;
                                 score += 50;
                                 veggieRects.RemoveAt(i);
                                 veggieTextures.RemoveAt(i);
@@ -190,6 +218,7 @@ namespace fruit_and_veggies_or_something
                         {
                             if (bombRects[i].Contains(mouseState.Position))
                             {
+                                bombCount++;
                                 score -= 250;
                                 bombRects.RemoveAt(i);
                                 i--;
@@ -200,7 +229,9 @@ namespace fruit_and_veggies_or_something
                             if (gappleRects[i].Contains(mouseState.Position))
                             {
                                 gappleClicked = true;
-                                score += 500;
+                                gappleCount++;
+                                rawScore += 750;
+                                score += 750;
                                 fruitRespawn -= 0.25f;
                                 fruitMax += 5;
                                 veggieRespawn -= 0.25f;
@@ -230,6 +261,11 @@ namespace fruit_and_veggies_or_something
                     }
                         break;
                 case Screen.Outro:
+                    if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        if (exitBtn.Contains(mouseState.Position))
+                            Exit();
+                    }
                     break;
             }
             
@@ -238,54 +274,60 @@ namespace fruit_and_veggies_or_something
 
             // TODO: Add your update logic here
 
-            if (screen == Screen.Game)
+            switch (screen)
             {
-                fruitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                veggieTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                bombTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                gappleTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                gameStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                case Screen.Intro:
+                    break;
+                case Screen.Game:
+                    fruitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    veggieTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    bombTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    gappleTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    gameStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (fruitTimer > fruitRespawn)
-                {
-                    if (fruitRects.Count < fruitMax)
+                    if (fruitTimer > fruitRespawn)
                     {
-                        fruitTextures.Add(frTextures[generator.Next(frTextures.Count)]);
-                        fruitRects.Add(new Rectangle(generator.Next(window.Width - (sizeMax + 16)), generator.Next(window.Height - (sizeMax + 16)), sizeMax, sizeMax));
+                        if (fruitRects.Count < fruitMax)
+                        {
+                            fruitTextures.Add(frTextures[generator.Next(frTextures.Count)]);
+                            fruitRects.Add(new Rectangle(generator.Next(window.Width - (sizeMax + 16)), generator.Next(window.Height - (sizeMax + 16)), sizeMax, sizeMax));
+                        }
+                        fruitTimer = 0f;
                     }
-                    fruitTimer = 0f;
-                }
-                if (veggieTimer > veggieRespawn)
-                {
-                    if (veggieRects.Count < veggieMax)
+                    if (veggieTimer > veggieRespawn)
                     {
-                        veggieTextures.Add(vgTextures[generator.Next(vgTextures.Count)]);
-                        veggieRects.Add(new Rectangle(generator.Next(window.Width - (sizeMax + 16)), generator.Next(window.Height - (sizeMax + 16)), sizeMax, sizeMax));
+                        if (veggieRects.Count < veggieMax)
+                        {
+                            veggieTextures.Add(vgTextures[generator.Next(vgTextures.Count)]);
+                            veggieRects.Add(new Rectangle(generator.Next(window.Width - (sizeMax + 16)), generator.Next(window.Height - (sizeMax + 16)), sizeMax, sizeMax));
+                        }
+                        veggieTimer = 0f;
                     }
-                    veggieTimer = 0f;
-                }
-                if (bombTimer > bombRespawn)
-                {
-                    //bombTextures.Add(bombTexture);
-                    if (bombRects.Count < bombMax)
-                        bombRects.Add(new Rectangle(generator.Next(window.Width - (bombSize + 16)), generator.Next(window.Height - (bombSize + 16)), bombSize, bombSize));
-                    bombTimer = 0f;
-                    if (!gappleClicked)
-                        bombRespawn = generator.Next(3, 8);
-                    else
-                        bombRespawn = 0.25f;
+                    if (bombTimer > bombRespawn)
+                    {
+                        //bombTextures.Add(bombTexture);
+                        if (bombRects.Count < bombMax)
+                            bombRects.Add(new Rectangle(generator.Next(window.Width - (bombSize + 16)), generator.Next(window.Height - (bombSize + 16)), bombSize, bombSize));
+                        bombTimer = 0f;
+                        if (!gappleClicked)
+                            bombRespawn = generator.Next(3, 8);
+                        else
+                            bombRespawn = 0.25f;
 
-                }
-                if (gappleTimer > gappleRespawn)
-                {
-                    if (gappleRects.Count < gappleMax)
-                        gappleRects.Add(new Rectangle(generator.Next(window.Width - (gappleSize + 16)), generator.Next(window.Height - (gappleSize + 16)), gappleSize, gappleSize));
-                    gappleTimer = 0f;
-                }
-                if (gameStart > gameEnd)
-                {
-                    screen = Screen.Outro;
-                }
+                    }
+                    if (gappleTimer > gappleRespawn)
+                    {
+                        if (gappleRects.Count < gappleMax)
+                            gappleRects.Add(new Rectangle(generator.Next(window.Width - (gappleSize + 16)), generator.Next(window.Height - (gappleSize + 16)), gappleSize, gappleSize));
+                        gappleTimer = 0f;
+                    }
+                    if (gameStart > gameEnd)
+                    {
+                        screen = Screen.Outro;
+                    }
+                    break;
+                case Screen.Outro:
+                    break;
             }
             base.Update(gameTime);
         }
@@ -300,9 +342,19 @@ namespace fruit_and_veggies_or_something
             switch (screen)
             {
                 case Screen.Intro:
-                    _spriteBatch.Draw(introBack, window, Color.White);
-                    _spriteBatch.Draw(playTexture, playBtn, Color.White);
-                    break;
+                    if (!howPlay)
+                    {
+                        _spriteBatch.Draw(introBack, window, Color.White);
+                        _spriteBatch.Draw(playTexture, playBtn, Color.White);
+                        _spriteBatch.Draw(howBtnTexture, howBtn, Color.White);
+                        _spriteBatch.Draw(creditsBtnTexture, creditsBtn, Color.White);
+                    }
+                    else if (howPlay)
+                    {
+                        _spriteBatch.Draw(howPlayTexture, window, Color.White);
+                        _spriteBatch.Draw(backBtnTexture, backBtn, Color.White);
+                    }
+                        break;
                 case Screen.Game:
                     _spriteBatch.Draw(gameBack, window, Color.White);
                     for (int i = 0; i < fruitRects.Count; i++)
@@ -350,6 +402,14 @@ namespace fruit_and_veggies_or_something
                     _spriteBatch.DrawString(gameFont, $"{Math.Round((gameEnd - gameStart), 0)}", new Vector2(700, 0), Color.White);
                     break;
                 case Screen.Outro:
+                    _spriteBatch.Draw(statisticsTexture, window, Color.White);
+                    _spriteBatch.Draw(exitBtnTexture, exitBtn, Color.White);
+                    _spriteBatch.DrawString(statsFont, $"{gappleCount}", new Vector2(140, 100), Color.Black);
+                    _spriteBatch.DrawString(statsFont, $"{fruitCount}", new Vector2(140, 200), Color.Black);
+                    _spriteBatch.DrawString(statsFont, $"{veggieCount}", new Vector2(140, 300), Color.Black);
+                    _spriteBatch.DrawString(statsFont, $"{bombCount}", new Vector2(140, 400), Color.Black);
+                    _spriteBatch.DrawString(statsFont, $"{rawScore}", new Vector2(550, 160), Color.Black);
+                    _spriteBatch.DrawString(statsFont, $"{score}", new Vector2(550, 360), Color.Black);
                     break;
             }
             
