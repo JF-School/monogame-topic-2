@@ -41,9 +41,11 @@ namespace fruit_and_veggies_or_something
         List<Rectangle> veggieRects;
         List<Rectangle> bombRects;
         List<Rectangle> gappleRects;
-        Rectangle playBtn, howBtn, creditsBtn, exitBtn, backBtn;
+        Rectangle playBtn, howBtn, creditsBtn, exitBtn, backBtn; // buttons
+        Rectangle logoRect;
         Texture2D bombTexture, playTexture, howBtnTexture, howPlayTexture, creditsTexture, 
-            creditsBtnTexture, gappleTexture, statisticsTexture, exitBtnTexture, backBtnTexture;
+            creditsBtnTexture, gappleTexture, statisticsTexture, exitBtnTexture, backBtnTexture,
+            logoTexture;
         Texture2D introBack, gameBack;
         List<Texture2D> frTextures;
         List<Texture2D> vgTextures;
@@ -113,6 +115,8 @@ namespace fruit_and_veggies_or_something
             exitBtn = new Rectangle(720, 5, 75, 75);
             creditsBtn = new Rectangle(460, 200, 100, 100);
 
+            logoRect = new Rectangle(145, 10, 509, 140);
+
             frTextures = new List<Texture2D>();
             vgTextures = new List<Texture2D>();
             fruitTextures = new List<Texture2D>();
@@ -139,6 +143,7 @@ namespace fruit_and_veggies_or_something
             bombTexture = Content.Load<Texture2D>("Images/dynamite");
             gappleTexture = Content.Load<Texture2D>("Images/goldenapple");
 
+            logoTexture = Content.Load<Texture2D>("Images/foodslicerlogo");
             introBack = Content.Load<Texture2D>("Images/introbackground");
             gameBack = Content.Load<Texture2D>("Images/fruitbackground");
 
@@ -359,6 +364,7 @@ namespace fruit_and_veggies_or_something
                     if (tab == 0)
                     {
                         _spriteBatch.Draw(introBack, window, Color.White);
+                        _spriteBatch.Draw(logoTexture, logoRect, Color.White);
                         _spriteBatch.Draw(playTexture, playBtn, Color.White);
                         _spriteBatch.Draw(howBtnTexture, howBtn, Color.White);
                         _spriteBatch.Draw(creditsBtnTexture, creditsBtn, Color.White);
